@@ -1,0 +1,9 @@
+Country,Code,Overall_Readiness,Power_Reliability,Fiber_Connectivity,Regulatory_Score,Cooling_Efficiency,Digital_Demand,Investment_B,Broadband_Mbps,Cooling_Cost_Index,Time_to_Market_Months,Expected_IRR_Pct,ERI_Score,Risk_Profile,Region
+South Africa,SA,8.5,7,9,8,8,10,3.0,48.5,1.4,18,15,,2,Southern
+Kenya,KE,8.2,7,9,9,8,9,2.0,35.0,1.2,30,20,0.889,2,East
+Nigeria,NG,7.8,5,9,7,7,10,1.5,22.0,1.6,24,25,,4,West
+Egypt,EG,8.0,8,10,7,7,8,1.0,84.5,1.5,30,10,,3,North
+Morocco,MO,7.5,8,7,7,8,7,0.75,36.4,1.3,36,15,,3,North
+Ghana,GH,7.0,6,8,7,7,7,0.25,51.2,1.4,42,10,,3,West
+Côte d_Ivoire,CI,7.2,6,8,7,7,7,0.25,59.9,1.4,36,5,,3,West
+Senegal,SN,7.1,7,7,9,7,7,0.0,30.0,1.3,60,5,0.892,3,West

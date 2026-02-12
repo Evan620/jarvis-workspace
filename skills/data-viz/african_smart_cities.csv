@@ -1,0 +1,16 @@
+city,country,energy_reliability,fiber_connectivity,digital_infrastructure,urban_density,smart_city_score
+Nairobi,Kenya,78,82,75,68,75.8
+Kigali,Rwanda,85,88,82,72,81.8
+Cairo,Egypt,72,75,70,85,75.5
+Johannesburg,South Africa,80,85,78,65,77.0
+Accra,Ghana,70,68,65,62,66.3
+Lagos,Nigeria,65,60,62,78,66.3
+Casablanca,Morocco,75,80,72,68,73.8
+Addis Ababa,Ethiopia,68,65,60,70,65.8
+Dakar,Senegal,72,70,68,58,67.0
+Abidjan,Côte d'Ivoire,68,65,62,65,65.0
+Dar es Salaam,Tanzania,65,62,60,70,64.3
+Kampala,Uganda,70,68,65,60,65.8
+Cape Town,South Africa,82,88,80,55,76.3
+Tunis,Tunisia,75,78,72,62,71.8
+Kinshasa,DRC,55,45,50,72,55.5

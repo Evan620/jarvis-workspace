@@ -1,0 +1,387 @@
+#!/home/evan/clawd/skills/linkedin/.venv/bin/python
+"""
+LinkedIn CLI - A command-line interface for LinkedIn operations.
+Uses linkedin-api library for unofficial LinkedIn API access.
+"""
+
+import argparse
+import json
+import os
+import sys
+from pathlib import Path
+
+# Add venv to path
+SKILL_DIR = Path(__file__).parent
+VENV_SITE = SKILL_DIR / ".venv/lib/python3.12/site-packages"
+if VENV_SITE.exists():
+    sys.path.insert(0, str(VENV_SITE))
+
+from linkedin_api import Linkedin
+
+CONFIG_PATH = Path.home() / ".config" / "linkedin" / "credentials.json"
+
+
+def get_credentials():
+    """Load credentials from config file or environment."""
+    # Try environment variables first
+    email = os.environ.get("LINKEDIN_EMAIL")
+    password = os.environ.get("LINKEDIN_PASSWORD")
+    
+    if email and password:
+        return email, password
+    
+    # Try config file
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH) as f:
+            creds = json.load(f)
+            return creds.get("email"), creds.get("password")
+    
+    return None, None
+
+
+def get_api():
+    """Initialize LinkedIn API client."""
+    email, password = get_credentials()
+    if not email or not password:
+        print("Error: LinkedIn credentials not configured.", file=sys.stderr)
+        print(f"Set LINKEDIN_EMAIL and LINKEDIN_PASSWORD env vars, or create {CONFIG_PATH}", file=sys.stderr)
+        sys.exit(1)
+    
+    try:
+        return Linkedin(email, password)
+    except Exception as e:
+        print(f"Error authenticating: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_configure(args):
+    """Configure LinkedIn credentials."""
+    CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    
+    if args.email and args.password:
+        creds = {"email": args.email, "password": args.password}
+    else:
+        import getpass
+        email = input("LinkedIn Email: ")
+        password = getpass.getpass("LinkedIn Password: ")
+        creds = {"email": email, "password": password}
+    
+    with open(CONFIG_PATH, "w") as f:
+        json.dump(creds, f, indent=2)
+    os.chmod(CONFIG_PATH, 0o600)
+    
+    print(f"Credentials saved to {CONFIG_PATH}")
+    
+    # Test authentication
+    print("Testing authentication...")
+    try:
+        api = Linkedin(creds["email"], creds["password"])
+        me = api.get_user_profile()
+        print(f"✓ Authenticated as: {me.get('firstName', '')} {me.get('lastName', '')}")
+    except Exception as e:
+        print(f"✗ Authentication failed: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_whoami(args):
+    """Show current authenticated user."""
+    api = get_api()
+    me = api.get_user_profile()
+    
+    if args.json:
+        print(json.dumps(me, indent=2, default=str))
+    else:
+        print(f"Name: {me.get('firstName', '')} {me.get('lastName', '')}")
+        print(f"Headline: {me.get('headline', 'N/A')}")
+        print(f"Location: {me.get('locationName', 'N/A')}")
+        if me.get('publicIdentifier'):
+            print(f"Profile: https://linkedin.com/in/{me.get('publicIdentifier')}")
+
+
+def cmd_search_people(args):
+    """Search for people on LinkedIn."""
+    api = get_api()
+    
+    results = api.search_people(
+        keywords=args.query,
+        limit=args.limit or 10
+    )
+    
+    if args.json:
+        print(json.dumps(results, indent=2, default=str))
+    else:
+        if not results:
+            print("No results found.")
+            return
+        
+        for i, person in enumerate(results, 1):
+            name = person.get('name', 'Unknown')
+            headline = person.get('jobtitle', person.get('headline', 'N/A'))
+            location = person.get('location', 'N/A')
+            urn = person.get('urn_id', '')
+            public_id = person.get('public_id', '')
+            
+            print(f"\n{i}. {name}")
+            print(f"   Headline: {headline}")
+            print(f"   Location: {location}")
+            if public_id:
+                print(f"   Profile: https://linkedin.com/in/{public_id}")
+
+
+def cmd_search_companies(args):
+    """Search for companies on LinkedIn."""
+    api = get_api()
+    
+    results = api.search_companies(
+        keywords=args.query,
+        limit=args.limit or 10
+    )
+    
+    if args.json:
+        print(json.dumps(results, indent=2, default=str))
+    else:
+        if not results:
+            print("No results found.")
+            return
+        
+        for i, company in enumerate(results, 1):
+            name = company.get('name', 'Unknown')
+            print(f"\n{i}. {name}")
+            if company.get('headline'):
+                print(f"   {company.get('headline')}")
+
+
+def cmd_search_jobs(args):
+    """Search for jobs on LinkedIn."""
+    api = get_api()
+    
+    results = api.search_jobs(
+        keywords=args.query,
+        limit=args.limit or 10,
+        location_name=args.location,
+        remote=args.remote
+    )
+    
+    if args.json:
+        print(json.dumps(results, indent=2, default=str))
+    else:
+        if not results:
+            print("No results found.")
+            return
+        
+        for i, job in enumerate(results, 1):
+            title = job.get('title', 'Unknown')
+            company = job.get('companyName', 'Unknown Company')
+            location = job.get('formattedLocation', 'N/A')
+            
+            print(f"\n{i}. {title}")
+            print(f"   Company: {company}")
+            print(f"   Location: {location}")
+            if job.get('jobPostingId'):
+                print(f"   Job ID: {job.get('jobPostingId')}")
+
+
+def cmd_profile(args):
+    """Get a user's profile."""
+    api = get_api()
+    
+    profile = api.get_profile(args.username)
+    
+    if args.json:
+        print(json.dumps(profile, indent=2, default=str))
+    else:
+        print(f"Name: {profile.get('firstName', '')} {profile.get('lastName', '')}")
+        print(f"Headline: {profile.get('headline', 'N/A')}")
+        print(f"Location: {profile.get('locationName', 'N/A')}")
+        print(f"Industry: {profile.get('industryName', 'N/A')}")
+        print(f"Summary: {profile.get('summary', 'N/A')[:200]}...")
+        
+        if profile.get('experience'):
+            print("\nExperience:")
+            for exp in profile.get('experience', [])[:3]:
+                title = exp.get('title', 'N/A')
+                company = exp.get('companyName', 'N/A')
+                print(f"  - {title} at {company}")
+
+
+def cmd_contact(args):
+    """Get contact info for a profile."""
+    api = get_api()
+    
+    contact = api.get_profile_contact_info(args.username)
+    
+    if args.json:
+        print(json.dumps(contact, indent=2, default=str))
+    else:
+        print(f"Email: {contact.get('email_address', 'N/A')}")
+        if contact.get('websites'):
+            print("Websites:")
+            for site in contact.get('websites', []):
+                print(f"  - {site.get('url', 'N/A')}")
+        if contact.get('twitter'):
+            print(f"Twitter: @{contact.get('twitter', [{}])[0].get('name', 'N/A')}")
+        if contact.get('phone_numbers'):
+            print("Phone:")
+            for phone in contact.get('phone_numbers', []):
+                print(f"  - {phone.get('number', 'N/A')}")
+
+
+def cmd_connections(args):
+    """Get connections for a profile."""
+    api = get_api()
+    
+    connections = api.get_profile_connections(args.username, max_connections=args.limit or 20)
+    
+    if args.json:
+        print(json.dumps(connections, indent=2, default=str))
+    else:
+        if not connections:
+            print("No connections found or access denied.")
+            return
+        
+        for i, conn in enumerate(connections, 1):
+            name = f"{conn.get('firstName', '')} {conn.get('lastName', '')}"
+            headline = conn.get('headline', 'N/A')
+            print(f"{i}. {name} - {headline}")
+
+
+def cmd_message(args):
+    """Send a message to a connection."""
+    api = get_api()
+    
+    # Get the profile to find the URN
+    profile = api.get_profile(args.username)
+    profile_urn = profile.get('profile_urn') or profile.get('entityUrn')
+    
+    if not profile_urn:
+        print("Error: Could not find profile URN", file=sys.stderr)
+        sys.exit(1)
+    
+    # Extract the member ID from URN
+    member_id = profile_urn.split(":")[-1]
+    
+    result = api.send_message(
+        message_body=args.message,
+        recipients=[member_id]
+    )
+    
+    if result:
+        print("✓ Message sent successfully")
+    else:
+        print("✗ Failed to send message", file=sys.stderr)
+
+
+def cmd_check(args):
+    """Check credential status."""
+    email, password = get_credentials()
+    
+    print("LinkedIn CLI Credential Check")
+    print("-" * 40)
+    
+    if email:
+        masked_email = email[:3] + "***" + email[email.index("@"):]
+        print(f"✓ Email: {masked_email}")
+    else:
+        print("✗ Email: not configured")
+    
+    if password:
+        print(f"✓ Password: {'*' * 8}")
+    else:
+        print("✗ Password: not configured")
+    
+    print(f"\nConfig file: {CONFIG_PATH}")
+    print(f"Config exists: {CONFIG_PATH.exists()}")
+    
+    if email and password:
+        print("\nTesting authentication...")
+        try:
+            api = Linkedin(email, password)
+            me = api.get_user_profile()
+            print(f"✓ Authenticated as: {me.get('firstName', '')} {me.get('lastName', '')}")
+        except Exception as e:
+            print(f"✗ Authentication failed: {e}")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="linkedin-cli",
+        description="LinkedIn CLI - Search, view profiles, and interact with LinkedIn"
+    )
+    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
+    
+    subparsers = parser.add_subparsers(dest="command", help="Commands")
+    
+    # Configure
+    p_config = subparsers.add_parser("configure", help="Configure LinkedIn credentials")
+    p_config.add_argument("--email", help="LinkedIn email")
+    p_config.add_argument("--password", help="LinkedIn password")
+    p_config.set_defaults(func=cmd_configure)
+    
+    # Check
+    p_check = subparsers.add_parser("check", help="Check credential status")
+    p_check.set_defaults(func=cmd_check)
+    
+    # Whoami
+    p_whoami = subparsers.add_parser("whoami", help="Show current authenticated user")
+    p_whoami.add_argument("--json", action="store_true", help="Output as JSON")
+    p_whoami.set_defaults(func=cmd_whoami)
+    
+    # Search People
+    p_search = subparsers.add_parser("search", help="Search for people")
+    p_search.add_argument("query", help="Search query")
+    p_search.add_argument("-n", "--limit", type=int, default=10, help="Max results")
+    p_search.add_argument("--json", action="store_true", help="Output as JSON")
+    p_search.set_defaults(func=cmd_search_people)
+    
+    # Search Companies
+    p_companies = subparsers.add_parser("companies", help="Search for companies")
+    p_companies.add_argument("query", help="Search query")
+    p_companies.add_argument("-n", "--limit", type=int, default=10, help="Max results")
+    p_companies.add_argument("--json", action="store_true", help="Output as JSON")
+    p_companies.set_defaults(func=cmd_search_companies)
+    
+    # Search Jobs
+    p_jobs = subparsers.add_parser("jobs", help="Search for jobs")
+    p_jobs.add_argument("query", help="Search query")
+    p_jobs.add_argument("-n", "--limit", type=int, default=10, help="Max results")
+    p_jobs.add_argument("-l", "--location", help="Location filter")
+    p_jobs.add_argument("--remote", action="store_true", help="Remote jobs only")
+    p_jobs.add_argument("--json", action="store_true", help="Output as JSON")
+    p_jobs.set_defaults(func=cmd_search_jobs)
+    
+    # Profile
+    p_profile = subparsers.add_parser("profile", help="Get user profile")
+    p_profile.add_argument("username", help="LinkedIn username/public ID")
+    p_profile.add_argument("--json", action="store_true", help="Output as JSON")
+    p_profile.set_defaults(func=cmd_profile)
+    
+    # Contact
+    p_contact = subparsers.add_parser("contact", help="Get profile contact info")
+    p_contact.add_argument("username", help="LinkedIn username/public ID")
+    p_contact.add_argument("--json", action="store_true", help="Output as JSON")
+    p_contact.set_defaults(func=cmd_contact)
+    
+    # Connections
+    p_conn = subparsers.add_parser("connections", help="Get profile connections")
+    p_conn.add_argument("username", help="LinkedIn username/public ID")
+    p_conn.add_argument("-n", "--limit", type=int, default=20, help="Max results")
+    p_conn.add_argument("--json", action="store_true", help="Output as JSON")
+    p_conn.set_defaults(func=cmd_connections)
+    
+    # Message
+    p_msg = subparsers.add_parser("message", help="Send a message")
+    p_msg.add_argument("username", help="LinkedIn username/public ID")
+    p_msg.add_argument("message", help="Message text")
+    p_msg.set_defaults(func=cmd_message)
+    
+    args = parser.parse_args()
+    
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+    
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()

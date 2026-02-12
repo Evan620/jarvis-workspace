@@ -1,0 +1,16 @@
+location,country,english_proficiency_0_100,local_ai_experts_0_100,university_partnerships_0_100,cloud_provider_presence_0_100,cost_of_living_affordability_0_100,government_ai_policy_support_0_100,compute_costs_student_usd_month,total_score
+Nairobi,Kenya,95,200,85,100,60,75,50,93.8
+Cape Town,South Africa,95,300,50,80,30,60,40,94.5
+Lagos,Nigeria,85,100,70,40,50,70,80,70.8
+Accra,Ghana,90,50,70,60,65,70,60,69.3
+Kigali,Rwanda,90,20,80,20,80,95,200,55.3
+Addis Ababa,Ethiopia,75,40,60,30,70,85,180,56.8
+Casablanca,Morocco,70,60,65,90,75,80,90,74.3
+Dakar,Senegal,65,35,55,70,70,75,120,64.3
+Kampala,Uganda,92,50,85,50,75,70,70,70.3
+Cairo,Egypt,80,80,40,60,40,65,90,64.0
+Tunis,Tunisia,85,45,60,80,65,60,70,65.8
+Abidjan,Côte d'Ivoire,60,30,40,50,70,65,140,50.8
+Dar es Salaam,Tanzania,88,35,65,55,75,70,90,67.0
+Kinshasa,DRC,60,25,30,40,60,50,150,45.3
+Johannesburg,South Africa,95,250,45,90,25,60,35,92.3

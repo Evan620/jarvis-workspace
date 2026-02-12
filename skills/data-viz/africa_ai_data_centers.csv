@@ -1,0 +1,16 @@
+location,country,region,electricity_cost_usd_kwh,grid_reliability_0_100,fiber_backbone_0_100,climate_suitability_0_100,ai_data_center_score
+Johannesburg,South Africa,Southern Africa,0.15,88,95,75,83.0
+Cape Town,South Africa,Southern Africa,0.16,85,95,70,79.0
+Cairo,Egypt,North Africa,0.05,82,88,50,71.3
+Casablanca,Morocco,North Africa,0.10,80,90,65,76.3
+Nairobi,Kenya,East Africa,0.22,78,82,72,76.3
+Kigali,Rwanda,East Africa,0.25,90,65,85,80.0
+Lagos,Nigeria,West Africa,0.10,65,85,45,71.3
+Accra,Ghana,West Africa,0.15,70,82,55,69.3
+Addis Ababa,Ethiopia,East Africa,0.04,72,60,85,80.3
+Dar es Salaam,Tanzania,East Africa,0.08,68,75,50,67.8
+Dakar,Senegal,West Africa,0.20,70,80,60,72.5
+Tunis,Tunisia,North Africa,0.12,75,82,62,72.8
+Kinshasa,DRC,Central Africa,0.18,55,50,45,54.5
+Abidjan,Côte d'Ivoire,West Africa,0.14,68,78,58,69.5
+Kampala,Uganda,East Africa,0.18,72,70,72,73.0

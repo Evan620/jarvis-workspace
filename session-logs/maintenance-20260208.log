@@ -1,0 +1,37 @@
+[0;32m[2026-02-08 22:00:34][0m ═══════════════════════════════════════════════════════════
+[0;32m[2026-02-08 22:00:34][0m Starting JARVIS Self-Maintenance
+[0;32m[2026-02-08 22:00:34][0m ═══════════════════════════════════════════════════════════
+[0;34m[2026-02-08 22:00:34][0m Task 1: Reviewing session logs...
+[0;32m[2026-02-08 22:00:34][0m Found 2 session log files
+[0;34m[2026-02-08 22:00:34][0m Task 2: Archiving old session logs...
+[0;32m[2026-02-08 22:00:34][0m Archived 0 old session logs
+[0;34m[2026-02-08 22:00:35][0m Task 3: Checking MEMORY.md health...
+[1;33m[2026-02-08 22:00:35] WARNING:[0m MEMORY.md not found - will be created on next main session
+[0;34m[2026-02-08 22:00:35][0m Task 4: Reviewing NEXT-ACTIONS.md...
+[0;32m[2026-02-08 22:00:35][0m Active tasks: 0
+0 | Completed tasks: 0
+0
+[0;34m[2026-02-08 22:00:35][0m Task 5: Checking SKILL files...
+[0;32m[2026-02-08 22:00:35][0m Found 20 skill files
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: adaptive-suite
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: agent-browser
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: bird
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: browser-cash
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: clawflows
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: context-viewport
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: cron-creator
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: ddg-search
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: deep-research
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: frontend-design-ultimate
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: linkedin
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: markdown-converter
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: morning-email-rollup
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: nia
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: proactive-agent
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: research-paper-writer
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: sonoscli
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: vercel
+[1;33m[2026-02-08 22:00:35] WARNING:[0m SKILL file missing description: youtube-video-downloader-pydzq
+[0;34m[2026-02-08 22:00:35][0m Task 6: Generating weekly summary...
+[0;32m[2026-02-08 22:00:35][0m Weekly summary created: /home/evan/clawd/session-logs/weekly-summary-20260208.md
+[0;34m[2026-02-08 22:00:35][0m Task 7: Backing up critical files...
